@@ -59,4 +59,12 @@ _A:_ The project leverages a diverse set of technologies to achieve its function
 
 
 
-          
+# Stage Two
+
+**Resources for layout**
+nav bars
+https://dev.to/codeply/bootstrap-5-sidebar-examples-38pb
+https://getbootstrap.com/docs/5.3/components/navbar/ 
+
+modal - pop up form
+https://getbootstrap.com/docs/5.3/components/modal/
