@@ -43,9 +43,19 @@ let options = {
     }
   };
 
+let optionsDetails =   {
+  method: 'GET',
+  url: 'https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/479101/information',
+  headers: {
+    'X-RapidAPI-Key': apiKey,
+    'X-RapidAPI-Host': apiHost
+  }
+};
+
 module.exports = {options,
     getRecipes: async (req, res) => {
         const {query} = req.query
+        console.log(`$getRecipe: ${query}`)
         try {
           const url = options.url
           options.params.query = query
@@ -57,32 +67,25 @@ module.exports = {options,
           console.error("Error GETTING Recipes", error);
           res.sendStatus(500);
         }
-    }
-      }
-
-/*       const testExternalAPI = async () => {
-        const searchQuery = 'pizza%20sauce'; // Replace with your search query
-      
-        const url = `https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/complexSearch?query=${searchQuery}`;
-        
-        const options = {
-          method: 'GET',
-          headers: {
-            'X-RapidAPI-Key': '234de7bdfemshe7f4d54fa047779p1ead16jsnfb552bc06fcc',
-            'X-RapidAPI-Host': "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com"
-          }
-        };
-      
-        try {
-          const response = await fetch(url, options);
-          if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-          }
-          const data = await response.json();
-          console.log(data); // Output the retrieved data
-        } catch (error) {
-          console.error('Error:', error);
+    },
+    getRecipeDetails: async (req, res) => {
+      try {
+        const { recipeId } = req.query;
+        console.log(`$getRecipeDetails recipe id: {recipeId}`)
+        if (recipeId !== undefined) { 
+          const recipeString = recipeId.toString();
+          const url = `https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/${recipeString}/information`
+          console.log(url)
+          optionsDetails.url = url;
+    
+          const response = await axios.request(optionsDetails);
+          res.status(200).send(response.data);
+        } else {
+          res.status(400).send("Query parameter is missing or undefined");
         }
-      }; */
-      
-      // Call the function to test the API
+      } catch(error) {
+        console.error("Error GETTING Recipe Details", error);
+        res.sendStatus(500);
+      }
+    }
+};
