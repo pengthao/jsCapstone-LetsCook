@@ -8,7 +8,7 @@ const recipeCallback = ({ results: recipes }) => displayRecipes(recipes);
 
 const searchHandler = (e) => {
   e.preventDefault();
-  let params = searchField.value; //encodeURIComponent(searchField.value)
+  let params = searchField.value;
   console.log(`search handler params ${params}`);
   getRecipes(params).then(() => console.log("Recipes fetched successfully!"));
 };
@@ -28,7 +28,7 @@ const getRecipes = async (params) => {
   }
 };
 
-function displayRecipes(arr) {
+const displayRecipes = (arr) => {
   recipeDiv.innerHTML = ``;
   console.log(arr);
   for (let i = 0; i < arr.length; i++) {
@@ -39,7 +39,7 @@ function displayRecipes(arr) {
     };
     makeRecipeCard(restructuredRecipe);
   }
-}
+};
 
 const makeRecipeCard = (recipe) => {
   const recipeCard = document.createElement("div");
@@ -78,9 +78,16 @@ const fetchRecipeDetails = async (recipeId) => {
   }
 };
 
+const displayRecipeDetails = (recipeDetails) => {
+  renderRecipeInfo(recipeDetails);
+  renderIngredients(recipeDetails.extendedIngredients);
+  renderInstructions(recipeDetails.analyzedInstructions);
+  initializePopover(recipeDetails.extendedIngredients);
+  initializePopoverCloseListener();
+  showModal();
+};
 
-
-function displayRecipeDetails(recipeDetails) {
+const renderRecipeInfo = (recipeDetails) => {
   const modalContent = document.getElementById("recipeDetailsContent");
   modalContent.innerHTML = `
   <img src="${recipeDetails.image}" alt="${recipeDetails.title}" style="max-width: 100%; height: auto;" />
@@ -101,12 +108,11 @@ function displayRecipeDetails(recipeDetails) {
     <ul id="instructionsList"></ul>
     </div>
   `;
+};
 
+const renderInstructions = (analyzedInstructions) => {
   const instructionsList = document.getElementById("instructionsList");
-  const analyzedInstructions = recipeDetails.analyzedInstructions;
-  const ingredientsList = document.getElementById("ingredientsList");
-  const extendedIngredients = recipeDetails.extendedIngredients;
-
+  
   analyzedInstructions.forEach((instructionGroup) => {
     instructionGroup.steps.forEach((step, stepIndex) => {
       const listItem = document.createElement("li");
@@ -114,6 +120,10 @@ function displayRecipeDetails(recipeDetails) {
       instructionsList.appendChild(listItem);
     });
   });
+};
+
+const renderIngredients = (extendedIngredients) => {
+  const ingredientsList = document.getElementById("ingredientsList");
 
   extendedIngredients.forEach((ingredient) => {
     const listItem = document.createElement("li");
@@ -125,16 +135,27 @@ function displayRecipeDetails(recipeDetails) {
     `;
     ingredientsList.appendChild(listItem);
   });
+};
 
+const initializePopover = (extendedIngredients) => {
+  const newPopoverButton = createPopoverButton(extendedIngredients);
+  newPopoverButton.addEventListener("click", showPopover);
+  document.getElementById("ingredientsContainer").appendChild(newPopoverButton);
+};
+
+const createPopoverButton = (extendedIngredients) => {
   const newPopoverButton = document.createElement("button");
   newPopoverButton.classList.add("btn", "btn-secondary");
   newPopoverButton.setAttribute("data-bs-toggle", "popover");
-  newPopoverButton.setAttribute("title", "Add Ingredients to your shopping list");
-  newPopoverButton.setAttribute("data-bs-content", "Add ingredients to your shopping list.");
+  newPopoverButton.setAttribute("title", "Shopping list");
+  newPopoverButton.setAttribute("data-bs-content", generatePopoverContent(extendedIngredients));
   newPopoverButton.innerHTML = "Add Ingredients"
   newPopoverButton.id = "popoverIngredients"
-  
-  const generatePopoverContent = () => {
+
+  return newPopoverButton;
+};
+
+const generatePopoverContent = (extendedIngredients) => {
     const popoverContainer = document.createElement('div');
     const popoverForm = document.createElement('form');
     const ingredientsList = document.createElement('ul');
@@ -156,27 +177,24 @@ function displayRecipeDetails(recipeDetails) {
     submitBtn.id = "popoverSubmit";
     submitBtn.type = "submit";
     submitBtn.classList.add("btn", "btn-primary");
-    submitBtn.innerText = "Submit";
+    submitBtn.innerText = "Add Items";
 
     popoverForm.appendChild(ingredientsList);
     popoverForm.appendChild(submitBtn);
     popoverContainer.appendChild(popoverForm);
 
     return popoverContainer.innerHTML;
-  };
+};
 
-  // Attaching popover event listener to the button
-  newPopoverButton.addEventListener('click', function() {
-    const popover = new bootstrap.Popover(newPopoverButton, {
-      content: generatePopoverContent(),
-      sanitize: false, // To prevent sanitization and render HTML
-      html: true // To interpret content as HTML
-    });
+const showPopover = () => {
+  const popover = new bootstrap.Popover(document.getElementById("popoverIngredients"), {
+    sanitize: false,
+    html: true,
   });
+};
 
-  document.getElementById("ingredientsContainer").appendChild(newPopoverButton);
-
-  document.addEventListener('click', function(event) {
+const initializePopoverCloseListener = () => {
+  document.addEventListener('click', (event) => {
     const isInsidePopover = document.getElementById('popoverIngredients').contains(event.target);
     const isPopoverVisible = document.querySelector('.popover');
     const isCheckboxClicked = event.target.classList.contains('form-check-input');
@@ -186,14 +204,14 @@ function displayRecipeDetails(recipeDetails) {
       popover.hide();
     }
   });
+};
 
-  // Show the modal
+const showModal = () => {
   const modalButton = document.getElementById("ingredModal");
   modalButton.addEventListener("click", () => {
     const modal = new bootstrap.Modal(document.getElementById("exampleModal"));
     modal.show();
   });
-}
-
+};
 
 searchBtn.addEventListener("click", searchHandler);
