@@ -1,7 +1,7 @@
 const searchBtn = document.getElementById("searchBtn");
 const searchField = document.getElementById("searchField");
 const recipeDiv = document.querySelector(".recipe-cards");
-const baseURL = "http://localhost:8080";
+
 
 const errCallback = (err, origin) => {
   if (err.response) {
@@ -23,7 +23,7 @@ const searchHandler = (e) => {
 
 const getRecipes = async (params) => {
   try {
-    const response = await axios.get(`${baseURL}/letscook/api/search`, {
+    const response = await axios.get(`/letscook/api/search`, {
       params: {
         query: params,
       },
@@ -73,7 +73,7 @@ const makeRecipeCard = (recipe) => {
 
 const fetchRecipeDetails = async (recipeId) => {
   try {
-    const response = await axios.get(`${baseURL}/letscook/api/recipe`, {
+    const response = await axios.get(`/letscook/api/recipe`, {
       params: {
         recipeId: recipeId,
       },
@@ -279,7 +279,7 @@ const addIngredientsToList = (extendedIngredients, selectedIngredients) => {
   const selectedIngredientsArray = Array.from(idMap.values());
 
   axios
-    .post(`${baseURL}/letscook/api/ingredients`, selectedIngredientsArray)
+    .post(`/letscook/api/ingredients`, selectedIngredientsArray)
     .then(() => {
       alert(`Ingredients have been added to your shopping list!`);
     });
