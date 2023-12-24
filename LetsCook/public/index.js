@@ -3,25 +3,31 @@ const searchField = document.getElementById("searchField");
 const recipeDiv = document.querySelector(".recipe-cards");
 const baseURL = "http://localhost:8080";
 
-const errCallback = (err) => console.log(err.response.data);
+const errCallback = (err, origin) => {
+  if (err.response) {
+    console.log(err.response.data);
+  } else {
+    console.error(`Error occurred in ${origin}:`, err);
+  }
+};
+
+//Search External API//
+
 const recipeCallback = ({ results: recipes }) => displayRecipes(recipes);
 
 const searchHandler = (e) => {
   e.preventDefault();
   let params = searchField.value;
-  console.log(`search handler params ${params}`);
   getRecipes(params).then(() => console.log("Recipes fetched successfully!"));
 };
 
 const getRecipes = async (params) => {
   try {
-    console.log("sending to axios");
     const response = await axios.get(`${baseURL}/letscook/api/search`, {
       params: {
         query: params,
       },
     });
-    console.log(`the response data ${response.data}`);
     recipeCallback(response.data);
   } catch (error) {
     errCallback(error, "getRecipes");
@@ -29,16 +35,14 @@ const getRecipes = async (params) => {
 };
 
 const displayRecipes = (arr) => {
-  recipeDiv.innerHTML = ``;
-  console.log(arr);
-  for (let i = 0; i < arr.length; i++) {
-    const restructuredRecipe = {
-      id: arr[i].id,
-      image: arr[i].image,
-      title: arr[i].title,
-    };
-    makeRecipeCard(restructuredRecipe);
-  }
+  const fragment = document.createDocumentFragment();
+
+  arr.forEach((recipe) => {
+    fragment.appendChild(makeRecipeCard(recipe));
+  });
+
+  recipeDiv.innerHTML = "";
+  recipeDiv.appendChild(fragment);
 };
 
 const makeRecipeCard = (recipe) => {
@@ -56,13 +60,16 @@ const makeRecipeCard = (recipe) => {
     </button>
     </div>
     `;
+
   const viewRecipeBtn = recipeCard.querySelector(".view-recipe-btn");
   viewRecipeBtn.addEventListener("click", () => {
-    const recipeId = recipeCard.getAttribute("data-id");
-    fetchRecipeDetails(recipeId);
+    fetchRecipeDetails(recipe.id);
   });
-  recipeDiv.appendChild(recipeCard);
+
+  return recipeCard;
 };
+
+//Recipe Details Modal//
 
 const fetchRecipeDetails = async (recipeId) => {
   try {
@@ -71,7 +78,6 @@ const fetchRecipeDetails = async (recipeId) => {
         recipeId: recipeId,
       },
     });
-    console.log(response.data);
     displayRecipeDetails(response.data);
   } catch (error) {
     errCallback(error, "fetchRecipeDetails");
@@ -112,30 +118,39 @@ const renderRecipeInfo = (recipeDetails) => {
 
 const renderInstructions = (analyzedInstructions) => {
   const instructionsList = document.getElementById("instructionsList");
-  
+  const fragment = document.createDocumentFragment();
+
   analyzedInstructions.forEach((instructionGroup) => {
     instructionGroup.steps.forEach((step, stepIndex) => {
       const listItem = document.createElement("li");
       listItem.textContent = `Step ${stepIndex + 1}: ${step.step}`;
-      instructionsList.appendChild(listItem);
+      fragment.appendChild(listItem);
     });
   });
+  instructionsList.innerHTML = "";
+  instructionsList.appendChild(fragment);
 };
 
 const renderIngredients = (extendedIngredients) => {
   const ingredientsList = document.getElementById("ingredientsList");
+  const fragment = document.createDocumentFragment();
 
   extendedIngredients.forEach((ingredient) => {
     const listItem = document.createElement("li");
-    listItem.id = ingredient.id
+    listItem.id = ingredient.id;
     listItem.innerHTML = `
         <b>${ingredient.name}</b>
         <br>
         ${ingredient.amount} - ${ingredient.unit}
     `;
-    ingredientsList.appendChild(listItem);
+    fragment.appendChild(listItem);
   });
+
+  ingredientsList.innerHTML = "";
+  ingredientsList.appendChild(fragment);
 };
+
+//Popover Ingredients List//
 
 const initializePopover = (extendedIngredients) => {
   const newPopoverButton = createPopoverButton(extendedIngredients);
@@ -148,70 +163,126 @@ const createPopoverButton = (extendedIngredients) => {
   newPopoverButton.classList.add("btn", "btn-secondary");
   newPopoverButton.setAttribute("data-bs-toggle", "popover");
   newPopoverButton.setAttribute("title", "Shopping list");
-  newPopoverButton.setAttribute("data-bs-content", generatePopoverContent(extendedIngredients));
-  newPopoverButton.innerHTML = "Add Ingredients"
-  newPopoverButton.id = "popoverIngredients"
+  newPopoverButton.innerHTML = "Add Ingredients";
+  newPopoverButton.id = "popoverIngredients";
+  newPopoverButton.setAttribute(
+    "data-bs-content",
+    generatePopoverContent(extendedIngredients)
+  );
 
   return newPopoverButton;
 };
 
 const generatePopoverContent = (extendedIngredients) => {
-    const popoverContainer = document.createElement('div');
-    const popoverForm = document.createElement('form');
-    const ingredientsList = document.createElement('ul');
+  const popoverContainer = document.createElement("div");
+  const ingredientsList = document.createElement("ul");
+  const fragment = document.createDocumentFragment();
+  ingredientsList.id = "ingredientShoppingList";
+  popoverContainer.id = "popoverContainer";
 
-    extendedIngredients.forEach((ingredient) => {
-      const listItem = document.createElement('li');
-      const label = document.createElement('label');
+  extendedIngredients.forEach((ingredient) => {
+    const listItem = document.createElement("li");
+    const label = document.createElement("label");
+    const checkboxId = ingredient.id;
 
-      label.classList.add('form-check-label');
-      label.innerHTML = `
-        <input type="checkbox" class="form-check-input" value="${ingredient.name}" checked>
-        <b>${ingredient.name}</b> ${ingredient.amount} - ${ingredient.unit}
-      `;
-      listItem.appendChild(label);
-      ingredientsList.appendChild(listItem);
+    listItem.id = ingredient.id;
+    label.classList.add("form-check-label");
+    label.innerHTML = `
+    <input type="checkbox" class="form-check-input" id="${checkboxId}" name="${ingredient.name}" value="${ingredient.name}" checked>
+    <b>${ingredient.name}</b> ${ingredient.amount} - ${ingredient.unit}
+    `;
+    listItem.appendChild(label);
+    fragment.appendChild(listItem);
+  });
+
+  ingredientsList.appendChild(fragment);
+  popoverContainer.appendChild(ingredientsList);
+
+  const submitBtn = document.createElement("button");
+  submitBtn.type = "button";
+  submitBtn.classList.add("btn", "btn-primary", "subBtn");
+  submitBtn.innerText = "Add Items";
+  submitBtn.id = "subBtn";
+
+  popoverContainer.appendChild(submitBtn);
+
+  const handleButtonClick = () => {
+    const checkedInputs = Array.from(
+      document.querySelectorAll('input[type="checkbox"]:checked')
+    );
+    const selectedIngredients = checkedInputs.map((input) => {
+      return input.id;
     });
+    addIngredientsToList(extendedIngredients, selectedIngredients);
+  };
 
-    const submitBtn = document.createElement('button');
-    submitBtn.id = "popoverSubmit";
-    submitBtn.type = "submit";
-    submitBtn.classList.add("btn", "btn-primary");
-    submitBtn.innerText = "Add Items";
-
-    popoverForm.appendChild(ingredientsList);
-    popoverForm.appendChild(submitBtn);
-    popoverContainer.appendChild(popoverForm);
-
-    return popoverContainer.innerHTML;
+  setTimeout(() => {
+    const submitBtn = document.getElementById("subBtn");
+    if (submitBtn) {
+      console.log("Button is present in the DOM");
+      submitBtn.addEventListener("click", handleButtonClick);
+    } else {
+      console.log("Button is NOT present in the DOM");
+    }
+  }, 10000);
+  return popoverContainer.innerHTML;
 };
 
 const showPopover = () => {
-  const popover = new bootstrap.Popover(document.getElementById("popoverIngredients"), {
-    sanitize: false,
-    html: true,
-  });
+  const popover = new bootstrap.Popover(
+    document.getElementById("popoverIngredients"),
+    {
+      sanitize: false,
+      html: true,
+    }
+  );
 };
 
 const initializePopoverCloseListener = () => {
-  document.addEventListener('click', (event) => {
-    const isInsidePopover = document.getElementById('popoverIngredients').contains(event.target);
-    const isPopoverVisible = document.querySelector('.popover');
-    const isCheckboxClicked = event.target.classList.contains('form-check-input');
-  
+  document.addEventListener("click", (event) => {
+    const isInsidePopover = document
+      .getElementById("popoverIngredients")
+      .contains(event.target);
+    const isPopoverVisible = document.querySelector(".popover");
+    const isCheckboxClicked =
+      event.target.classList.contains("form-check-input");
+
     if (!isInsidePopover && isPopoverVisible && !isCheckboxClicked) {
-      const popover = bootstrap.Popover.getInstance(document.getElementById('popoverIngredients'));
+      const popover = bootstrap.Popover.getInstance(
+        document.getElementById("popoverIngredients")
+      );
       popover.hide();
     }
   });
 };
 
 const showModal = () => {
-  const modalButton = document.getElementById("ingredModal");
+  const modalButton = document.getElementById("exampleModal");
   modalButton.addEventListener("click", () => {
     const modal = new bootstrap.Modal(document.getElementById("exampleModal"));
     modal.show();
   });
+};
+
+//Add ingredients to shopping list//
+
+const addIngredientsToList = (extendedIngredients, selectedIngredients) => {
+  const idMap = new Map();
+  extendedIngredients.forEach((ingredient) => {
+    idMap.set(ingredient.id, ingredient);
+  });
+
+  const selectedIngredientsId = selectedIngredients
+    .map((id) => idMap.get(id))
+    .filter(Boolean);
+
+  const selectedIngredientsArray = Array.from(idMap.values());
+
+  axios
+    .post(`${baseURL}/letscook/api/ingredients`, selectedIngredientsArray)
+    .then(() => {
+      alert(`Ingredients have been added to your shopping list!`);
+    });
 };
 
 searchBtn.addEventListener("click", searchHandler);
