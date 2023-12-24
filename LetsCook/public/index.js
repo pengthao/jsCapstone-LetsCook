@@ -1,7 +1,7 @@
 const searchBtn = document.getElementById("searchBtn");
 const searchField = document.getElementById("searchField");
 const recipeDiv = document.querySelector(".recipe-cards");
-const baseURL = "http://ec2-18-188-43-74.us-east-2.compute.amazonaws.com"
+const baseURL = "http://localhost:8080"
 
 const errCallback = (err, origin) => {
   if (err.response) {
