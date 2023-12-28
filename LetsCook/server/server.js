@@ -4,7 +4,7 @@ const app = express();
 const cors = require("cors");
 const { SERVER_PORT, rollBarAccessToken } = process.env;
 const path = require('path');
-let options = require("/controller");
+let options = require("../server/controller");
 
 app.use(express.json());
 app.use(cors());
