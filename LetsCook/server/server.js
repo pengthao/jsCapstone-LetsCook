@@ -25,7 +25,7 @@ var rollbar = new Rollbar({
 rollbar.log("Hello world!");
 
 app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/public/index.html');
+  res.sendFile(__dirname + '../public/index.html');
 });
 app.get(`/letscook/api/search/`, getRecipes);
 app.get(`/letscook/api/recipe/`, getRecipeDetails);
