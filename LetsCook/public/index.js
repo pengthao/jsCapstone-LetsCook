@@ -2,9 +2,11 @@ const searchBtn = document.getElementById("searchBtn");
 const searchField = document.getElementById("searchField");
 const homeClick = document.getElementById("homeClick");
 const homeList = document.getElementById("homeList");
+const shoppingList = document.getElementById("shoppingList");
 const recipeDiv = document.querySelector(".recipe-cards");
 const homeDiv = document.querySelector(".col py-3");
 const baseURL = "http://localhost:8080";
+const awsIP = "http://18.188.43.74:8080";
 
 const errCallback = (err, origin) => {
   if (err.response) {
@@ -31,7 +33,7 @@ const displayHome = async () => {
 const renderList = async () => {
   
   try {
-    const response = await axios.get(`${baseURL}/letscook/api/list/`);
+    const response = await axios.get(`${awsIP}/letscook/api/list/`);
     const ingredients = response.data; 
     const fragment = document.createDocumentFragment();
     
@@ -63,7 +65,7 @@ const searchHandler = async (e) => {
   e.preventDefault();
   const params = searchField.value;
   try {
-    const response = await axios.get(`${baseURL}/letscook/api/search/`, {
+    const response = await axios.get(`${awsIP}/letscook/api/search/`, {
       params: { query: params },
     });
     renderRecipes(response.data.results);
@@ -114,7 +116,7 @@ const makeRecipeCard = (recipe) => {
 
 const fetchRecipeDetails = async (recipeId) => {
   try {
-    const response = await axios.get(`${baseURL}/letscook/api/recipe/`, {
+    const response = await axios.get(`${awsIP}/letscook/api/recipe/`, {
       params: { recipeId: recipeId },
     });
     displayRecipeDetails(response.data);
@@ -274,7 +276,7 @@ const addIngredientsToList = (extendedIngredients, selectedIngredients) => {
   });
 
   axios
-    .post(`${baseURL}/letscook/api/ingredients/`, selectedIngredientsArray)
+    .post(`${awsIP}/letscook/api/ingredients/`, selectedIngredientsArray)
     .then(() => {
       alert(`Ingredients have been added to your shopping list!`);
     });
@@ -282,6 +284,10 @@ const addIngredientsToList = (extendedIngredients, selectedIngredients) => {
 
 searchBtn.addEventListener("click", searchHandler);
 homeClick.addEventListener("click",  () => {
+  displayHome()
+  clearRecipeCard()
+});
+shoppingList.addEventListener("click",  () => {
   displayHome()
   clearRecipeCard()
 });
