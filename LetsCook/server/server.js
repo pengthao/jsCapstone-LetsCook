@@ -10,6 +10,7 @@ const awsIP = "http://18.188.43.74:8080";
 
 app.use(express.json());
 app.use(cors());
+app.use(express.static(path.join(__dirname + '/public')));
 
 const {
   getRecipes,
@@ -26,7 +27,10 @@ var rollbar = new Rollbar({
 });
 rollbar.log("Hello world!");
 
-app.use(express.static(path.join(__dirname + '/public')));
+app.get("/", (req, res) => {
+  // Send the index.html file located in the 'public' directory
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
 
 app.get(`/letscook/api/search/`, getRecipes);
 app.get(`/letscook/api/recipe/`, getRecipeDetails);
