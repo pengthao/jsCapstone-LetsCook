@@ -28,7 +28,8 @@ var rollbar = new Rollbar({
 rollbar.log("Hello world!");
 
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "index.html"));
+  // Send the index.html file located in the 'public' directory
+  res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
 app.get(`/letscook/api/search/`, getRecipes);
