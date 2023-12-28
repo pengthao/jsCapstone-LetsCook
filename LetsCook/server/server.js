@@ -13,6 +13,7 @@ const {
   getRecipes,
   getRecipeDetails,
   addToShoppingList,
+  getList,
 } = require("./controller");
 
 var Rollbar = require("rollbar");
@@ -23,8 +24,10 @@ var rollbar = new Rollbar({
 });
 rollbar.log("Hello world!");
 
-app.get(`/letscook/api/search`, getRecipes);
-app.get(`/letscook/api/recipe`, getRecipeDetails);
-app.post(`/letscook/api/ingredients`, addToShoppingList);
+app.get(`/letscook/api/search/`, getRecipes);
+app.get(`/letscook/api/recipe/`, getRecipeDetails);
+app.get(`/letscook/api/list/`, getList);
+app.post(`/letscook/api/ingredients/`, addToShoppingList);
+
 
 app.listen(SERVER_PORT, () => console.log(`Order up on ${SERVER_PORT}`));

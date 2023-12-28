@@ -1,6 +1,9 @@
 const searchBtn = document.getElementById("searchBtn");
 const searchField = document.getElementById("searchField");
+const homeClick = document.getElementById("homeClick");
+const homeList = document.getElementById("homeList");
 const recipeDiv = document.querySelector(".recipe-cards");
+const homeDiv = document.querySelector(".col py-3");
 const baseURL = "http://localhost:8080";
 
 const errCallback = (err, origin) => {
@@ -11,13 +14,56 @@ const errCallback = (err, origin) => {
   }
 };
 
+const clearHomeList = () => {
+  homeList.innerHTML=""
+};
+const clearRecipeCard = () => {
+  recipeDiv.innerHTML=""
+};
+
+// Display Home //
+
+const displayHome = async () => {
+  await renderList()
+}
+
+
+const renderList = async () => {
+  
+  try {
+    const response = await axios.get(`${baseURL}/letscook/api/list/`);
+    const ingredients = response.data; 
+    const fragment = document.createDocumentFragment();
+    
+    ingredients.forEach((ingredient) => {
+      const listItem = document.createElement("li");
+      const label = document.createElement("label");
+
+      label.classList.add("form-check-label");
+      label.innerHTML = `
+        <b>${ingredient.item_name}</b> ${ingredient.quantity} - ${ingredient.unit}
+      `;
+
+      listItem.appendChild(label);
+      fragment.appendChild(listItem);
+    });
+
+    
+    homeList.innerHTML = `<h4>Shopping List</h4>`;
+    homeList.appendChild(fragment);
+  } catch (error) {
+    console.error("Error fetching list:", error);
+  }
+};
+
+
 //Search External API//
 
 const searchHandler = async (e) => {
   e.preventDefault();
   const params = searchField.value;
   try {
-    const response = await axios.get(`${baseURL}/letscook/api/search`, {
+    const response = await axios.get(`${baseURL}/letscook/api/search/`, {
       params: { query: params },
     });
     renderRecipes(response.data.results);
@@ -39,12 +85,14 @@ const renderRecipes = (recipes) => {
 };
 
 const makeRecipeCard = (recipe) => {
+  console.log(`readyHomeListClear`)
+  clearHomeList()
   const recipeCard = document.createElement("div");
   recipeCard.classList.add("recipe-card");
   recipeCard.setAttribute("data-id", recipe.id);
 
   recipeCard.innerHTML = `
-    <div class="recipe-card outline">
+    <div class="recipe-card outline g-col-6 g-col-md-4">
     <img src='${recipe.image}' alt='${recipe.title}' class="recipe-cover"/>
     <br>
     <p>${recipe.title}</p>
@@ -66,7 +114,7 @@ const makeRecipeCard = (recipe) => {
 
 const fetchRecipeDetails = async (recipeId) => {
   try {
-    const response = await axios.get(`${baseURL}/letscook/api/recipe`, {
+    const response = await axios.get(`${baseURL}/letscook/api/recipe/`, {
       params: { recipeId: recipeId },
     });
     displayRecipeDetails(response.data);
@@ -226,10 +274,17 @@ const addIngredientsToList = (extendedIngredients, selectedIngredients) => {
   });
 
   axios
-    .post(`${baseURL}/letscook/api/ingredients`, selectedIngredientsArray)
+    .post(`${baseURL}/letscook/api/ingredients/`, selectedIngredientsArray)
     .then(() => {
       alert(`Ingredients have been added to your shopping list!`);
     });
 };
 
 searchBtn.addEventListener("click", searchHandler);
+homeClick.addEventListener("click",  () => {
+  displayHome()
+  clearRecipeCard()
+});
+document.addEventListener("DOMContentLoaded", () => {
+  displayHome()
+});
