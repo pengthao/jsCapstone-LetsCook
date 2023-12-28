@@ -6,7 +6,7 @@ const shoppingList = document.getElementById("shoppingList");
 const recipeDiv = document.querySelector(".recipe-cards");
 const homeDiv = document.querySelector(".col py-3");
 const baseURL = "http://localhost:8080";
-const awsIP = "http://18.188.43.74:8080";
+const awsIP = "http://18.188.43.74";
 
 const errCallback = (err, origin) => {
   if (err.response) {
