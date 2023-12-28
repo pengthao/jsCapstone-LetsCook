@@ -10,7 +10,7 @@ const awsIP = "http://18.188.43.74:8080";
 
 app.use(express.json());
 app.use(cors());
-app.use(express.static(path.join(__dirname + SERVER_PORT + '/public')));
+app.use(express.static(path.join(__dirname + '/public')));
 
 const {
   getRecipes,
