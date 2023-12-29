@@ -1,13 +1,14 @@
-const searchBtn = document.getElementById("searchBtn");
-const searchField = document.getElementById("searchField");
 const homeClick = document.getElementById("homeClick");
 const homeList = document.getElementById("homeList");
 const shoppingList = document.getElementById("shoppingList");
 const recipeDiv = document.querySelector(".recipe-cards");
+
+const searchRecipeClick = document.getElementById("recipeSearchClick");
+const searchDiv = document.querySelector(".searchDiv");
 const homeDiv = document.querySelector(".col py-3");
 const baseURL = "http://localhost:8080";
 const awsIP = "http://18.188.43.74:8080";
-
+//add / to index.js and styles.css files
 const errCallback = (err, origin) => {
   if (err.response) {
     console.log(err.response.data);
@@ -16,14 +17,38 @@ const errCallback = (err, origin) => {
   }
 };
 
-const clearHomeList = () => {
-  homeList.innerHTML=""
-};
-const clearRecipeCard = () => {
-  recipeDiv.innerHTML=""
-};
+const clearHomeList = () => homeList.innerHTML="";
+const clearRecipeCard = () => recipeDiv.innerHTML="";
+const clearSearchDiv = () => searchDiv.innerHTML="";
 
+// Display SearchBar
+
+const displaySearch = () => {
+  clearHomeList()
+
+  searchDiv.innerHTML = `
+  <form class="b-flex" role="search">
+  <input
+    class="form-inline ds-input search-form searchBox"
+    type="search"
+    placeholder="Search Recipe"
+    aria-label="Search"
+    id="searchField"
+  />
+  <button
+    class="btn btn-secondary"
+    type="submit"
+    id="searchBtn"
+  >
+    Search
+  </button>
+</form>
+  `
+  const searchBtn = document.getElementById("searchBtn");
+  searchBtn.addEventListener("click", searchHandler);
+}
 // Display Home //
+
 
 const displayHome = async () => {
   await renderList()
@@ -31,7 +56,7 @@ const displayHome = async () => {
 
 
 const renderList = async () => {
-  
+
   try {
     const response = await axios.get(`${awsIP}/letscook/api/list/`);
     const ingredients = response.data; 
@@ -63,6 +88,7 @@ const renderList = async () => {
 
 const searchHandler = async (e) => {
   e.preventDefault();
+  const searchField = document.getElementById("searchField");
   const params = searchField.value;
   try {
     const response = await axios.get(`${awsIP}/letscook/api/search/`, {
@@ -76,36 +102,34 @@ const searchHandler = async (e) => {
 
 const renderRecipes = (recipes) => {
   const fragment = document.createDocumentFragment();
+  const rowDiv = document.createElement("div");
+  rowDiv.classList.add("row", "row-cols-5");
 
   recipes.forEach((recipe) => {
     const recipeCard = makeRecipeCard(recipe);
-    fragment.appendChild(recipeCard);
+    rowDiv.appendChild(recipeCard);
   });
 
+  fragment.appendChild(rowDiv);
   recipeDiv.innerHTML = "";
   recipeDiv.appendChild(fragment);
 };
 
 const makeRecipeCard = (recipe) => {
-  console.log(`readyHomeListClear`)
   clearHomeList()
   const recipeCard = document.createElement("div");
   recipeCard.classList.add("recipe-card");
   recipeCard.setAttribute("data-id", recipe.id);
 
   recipeCard.innerHTML = `
-    <div class="recipe-card outline g-col-6 g-col-md-4">
-    <img src='${recipe.image}' alt='${recipe.title}' class="recipe-cover"/>
+    <div class="recipe-card outline col m-1 pt-2btn btn-info view-recipe-btn .text-right" data-bs-toggle="modal" data-bs-target="#recipeModal">
+    <img src='${recipe.image}' alt='${recipe.title}' class="recipe-cover mx-auto d-block recipeImg"/>
     <br>
-    <p>${recipe.title}</p>
-    <button type="button" class="btn btn-primary view-recipe-btn" data-bs-toggle="modal" data-bs-target="#exampleModal">
-    View Recipe
-    </button>
+    <p class="text-center">${recipe.title}</p>
     </div>
     `;
 
-  const viewRecipeBtn = recipeCard.querySelector(".view-recipe-btn");
-  viewRecipeBtn.addEventListener("click", () => {
+  recipeCard.addEventListener("click", () => {
     fetchRecipeDetails(recipe.id);
   });
 
@@ -134,23 +158,29 @@ const displayRecipeDetails = (recipeDetails) => {
 const renderRecipeInfo = (recipeDetails) => {
   const modalContent = document.getElementById("recipeDetailsContent");
   modalContent.innerHTML = `
-  <img src="${recipeDetails.image}" alt="${recipeDetails.title}" style="max-width: 100%; height: auto;" />
-    <h2>${recipeDetails.title}</h2>
+  <div class=".bg-light">
+  <img src="${recipeDetails.image}" class="rounded" alt="${recipeDetails.title}" style="max-width: 100%; height: auto;"/>
+
+  <h2>${recipeDetails.title}</h2>
+
     <p>Ready in ${recipeDetails.readyInMinutes} minutes</p>
     <br>
-    <p1>Servings: ${recipeDetails.servings}</p1>
+    <p>Servings: ${recipeDetails.servings}</p>
     <br>
-    <p1>Summary: ${recipeDetails.summary}</p1>
+    <p>Summary: ${recipeDetails.summary}</p>
     <br>
     <br>
-    <div id="ingredientsContainer">
+    </div>
+    <div id="ingredientsContainer .bg-light">
       <h3>Ingredients</h3>
       <ul id="ingredientsList"></ul>
     </div>
-    <div id="instructionsContainer">
+    <div id="instructionsContainer .bg-light">
     <h2>Instructions</h2>
     <ul id="instructionsList"></ul>
     </div>
+
+
   `;
 };
 
@@ -182,6 +212,8 @@ const renderIngredients = (extendedIngredients) => {
 
     checkbox.type = "checkbox";
     checkbox.classList.add("form-check-input");
+    checkbox.classList.add(".bg-info");
+    checkbox.classList.add("m-2");
     checkbox.id = `${ingredient.id}_${checkboxIdCounter++}`;
     checkbox.name = ingredient.name;
     checkbox.value = ingredient.name;
@@ -203,7 +235,7 @@ const renderIngredients = (extendedIngredients) => {
 
   const addBtn = document.createElement("button");
   addBtn.type = "button";
-  addBtn.classList.add("btn", "btn-primary", "subBtn");
+  addBtn.classList.add("btn", "btn-info", "subBtn");
   addBtn.innerText = "Add Items";
   addBtn.id = "subBtn";
   ingredientsList.appendChild(addBtn);
@@ -282,15 +314,21 @@ const addIngredientsToList = (extendedIngredients, selectedIngredients) => {
     });
 };
 
-searchBtn.addEventListener("click", searchHandler);
+
 homeClick.addEventListener("click",  () => {
   displayHome()
   clearRecipeCard()
+  clearSearchDiv()
 });
 shoppingList.addEventListener("click",  () => {
   displayHome()
   clearRecipeCard()
+  clearSearchDiv()
 });
 document.addEventListener("DOMContentLoaded", () => {
   displayHome()
+});
+searchRecipeClick.addEventListener("click",  () => {
+  displaySearch()
+  clearRecipeCard()
 });

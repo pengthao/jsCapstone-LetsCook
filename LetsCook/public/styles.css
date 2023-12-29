@@ -1,13 +1,59 @@
 .my-custom-row {
-    background-color: bisque;
+    background-color: rgb(226, 125, 95);
     height: 400px
 }
 
 .cus_left_nav {
-    background-color:blanchedalmond;
+    background-color:rgb(132, 205, 202);
 }
 
 .cus_nav_bar {
-    background-color: rgb(226, 210, 186);
+    background-color: rgb(64, 179, 162);
 }
 
+
+ul {
+    list-style:none;
+}
+
+.ingredientCheckbox {
+    background-color:rgb(195, 141, 157);
+}
+
+.searchBox {
+    background-color: transparent;
+    color: rgb(226, 125, 95);
+    outline: black;
+    width: 350px;
+    height: 2.5em;
+    padding-bottom: 5px;
+
+}
+
+#searchBtn {
+    height: 2.5em;
+}
+
+.b-flex {
+    padding-left: 1em;
+    padding-bottom: 1em;
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.outline{
+    background-color:rgb(244, 203, 176);
+    border-radius: 25px;
+}
+
+
+.recipeImg {
+    border-radius: 25px;
+    padding-top: 1em;
+}
+
+.recipe-card {
+    padding-top: .75em;
+    padding-bottom: .25em;
+    width: 80%;
+}
