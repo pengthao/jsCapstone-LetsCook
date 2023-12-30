@@ -65,7 +65,7 @@ const displayHome = async () => {
 };
 
 const renderWelcome = () => {
-  welcomeHome.innerHTML = `<img src="../assets/letscookhome.jpg" class="welcomeImg"/>`;
+  welcomeHome.innerHTML = `<img src="assets/letscookhome.jpg" class="welcomeImg"/>`;
 };
 
 const renderList = async () => {
