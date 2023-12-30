@@ -29,9 +29,9 @@ const hideshoppingList = () => {
 };
 
 const hideWelcome = () => {
-  const welcomeHome = document.querySelectorAll(".welcomeHome");
-  if (welcomeHome) {
-    welcomeHome.forEach((img) => {
+  const welcomeImgs  = document.querySelectorAll(".welcomeImgs ");
+  if (welcomeImgs ) {
+    welcomeImgs .forEach((img) => {
       img.style.display = "none";
     });
   }
@@ -58,10 +58,14 @@ const showRecipeCards = () => {
 // Display Home //
 
 const displayHome = async () => {
-  if (welcomeHome) {
+  if(welcomeHome) {
     welcomeHome.style.display = "block";
-  }
-};
+  } renderWelcome()
+}
+
+const renderWelcome = () => {
+  welcomeHome.innerHTML = `<img src="https://i.ytimg.com/vi/b9pGR3O4z1M/maxresdefault.jpg" class="welcomeImg"/>`
+} 
 
 // Display Shopping List //
 
