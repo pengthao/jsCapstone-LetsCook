@@ -58,8 +58,8 @@ const showRecipeCards = () => {
 // Display Home //
 
 const displayHome = async () => {
-  if (welcomeHome) {
-    welcomeHome.style.display = "block";
+  if (welcomeImgs) {
+    welcomeImgs.style.display = "block";
   }
 };
 
