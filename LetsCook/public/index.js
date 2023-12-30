@@ -61,12 +61,9 @@ const displayHome = async () => {
   if (welcomeHome) {
     welcomeHome.style.display = "block";
   }
-  renderWelcome();
 };
 
-const renderWelcome = () => {
-  welcomeHome.innerHTML = `<img src="../assets/letscookhome.jpg" class="welcomeImg"/>`;
-};
+// Display Shopping List //
 
 const renderList = async () => {
   try {
@@ -94,7 +91,9 @@ const renderList = async () => {
   }
 };
 
-//Search External API//
+//Search External API to make recipe cards //
+
+/*search handler is fed from a click event from the searchBtn feeding in searchField data as params*/ 
 
 const searchHandler = async (e) => {
   e.preventDefault();
@@ -111,29 +110,40 @@ const searchHandler = async (e) => {
   }
 };
 
+/* response data is the spoonacular api's get search recipe results: an array of objects
+  id: 
+  title:
+  image:
+  imageType:
+  nutrition: {}
+*/
+
 const renderRecipeCards = (recipes) => {
+//page prep//  
   hideWelcome();
   hideshoppingList();
 
+//setup//
   const fragment = document.createDocumentFragment();
   const rowDiv = document.createElement("div");
   rowDiv.classList.add("row", "row-cols-5");
-
+//loop recipe array makeRecipeCardFunction)//
   recipes.forEach((recipe) => {
     const recipeCard = makeRecipeCard(recipe);
     rowDiv.appendChild(recipeCard);
   });
-
+//attach to div to display//
   fragment.appendChild(rowDiv);
   recipeCardContainer.innerHTML = "";
   recipeCardContainer.appendChild(fragment);
 };
 
 const makeRecipeCard = (recipe) => {
+//setup//
   const recipeCard = document.createElement("div");
   recipeCard.classList.add("recipe-card");
   recipeCard.setAttribute("data-id", recipe.id);
-
+//extract recipe object information and insert to recipeCard//
   recipeCard.innerHTML = `
     <div class="recipe-card outline col m-1 pt-2btn btn-info view-recipe-btn .text-right" data-bs-toggle="modal" data-bs-target="#recipeModal">
     <img src='${recipe.image}' alt='${recipe.title}' class="recipe-cover mx-auto d-block recipeImg"/>
@@ -141,7 +151,7 @@ const makeRecipeCard = (recipe) => {
     <p class="text-center">${recipe.title}</p>
     </div>
     `;
-
+//apply event listener for each card specific to this recipe id//
   recipeCard.addEventListener("click", () => {
     fetchRecipeDetails(recipe.id);
   });
@@ -149,7 +159,8 @@ const makeRecipeCard = (recipe) => {
   return recipeCard;
 };
 
-//Recipe Details Modal//
+// Modal - Recipe Details //
+
 
 const fetchRecipeDetails = async (recipeId) => {
   try {
@@ -161,6 +172,21 @@ const fetchRecipeDetails = async (recipeId) => {
     errCallback(error, "fetchRecipeDetails");
   }
 };
+
+/* response data is the spoonacular api's get recipe information results: an array of objects
+  id: 
+  title:
+  image:
+  extendedIngredients: {
+        id:
+        aisle:
+        image:
+        name:
+        units:
+
+  ~additional if needed~
+  }
+*/
 
 const displayRecipeDetails = (recipeDetails) => {
   renderRecipeInfo(recipeDetails);
@@ -215,6 +241,7 @@ const renderInstructions = (analyzedInstructions) => {
 let checkboxIdCounter = 0;
 
 const renderIngredients = (extendedIngredients) => {
+//setup//
   const ingredientsList = document.getElementById("ingredientsList");
   const fragment = document.createDocumentFragment();
 
@@ -222,7 +249,7 @@ const renderIngredients = (extendedIngredients) => {
     const listItem = document.createElement("li");
     const label = document.createElement("label");
     const checkbox = document.createElement("input");
-
+//apply properties to checkboxes for extraction later//
     checkbox.type = "checkbox";
     checkbox.classList.add("form-check-input");
     checkbox.classList.add(".bg-info");
@@ -262,11 +289,6 @@ const handleButtonClick = (extendedIngredients) => {
     document.querySelectorAll('input[type="checkbox"]:checked')
   );
 
-  console.log(`type for extendedIngred`);
-  for (const [key, value] of checkedInputs.entries()) {
-    console.log(key, value, typeof value);
-  }
-
   const selectedIngredients = checkedInputs
     .map((input) => {
       const parts = input.id.split("_");
@@ -276,8 +298,6 @@ const handleButtonClick = (extendedIngredients) => {
       return null;
     })
     .filter((id) => id !== null);
-
-  console.log(selectedIngredients);
 
   addIngredientsToList(extendedIngredients, selectedIngredients);
 };
@@ -289,38 +309,16 @@ const addIngredientsToList = (extendedIngredients, selectedIngredients) => {
     parseInt(str, 10)
   );
 
-  console.log(`type for extendedIngred`);
-  for (const [key, value] of extendedIngredients.entries()) {
-    console.log(key, value, typeof value);
-  }
-  console.log(`type for selectedIngred Id`);
-  for (const [key, value] of selectedIngredients.entries()) {
-    console.log(key, value, typeof value);
-  }
   const idMap = new Map();
   extendedIngredients.forEach((ingredient) => {
     idMap.set(ingredient.id, ingredient);
   });
-  console.log(`type for idmap Id`);
-  for (const [key, value] of idMap.entries()) {
-    console.log(key, value, typeof value);
-  }
 
   const selectedIngredientsId = selectedIngredientsNumbers
     .map((id) => idMap.get(id))
     .filter(Boolean);
 
-  console.log(`type for selectedIngredientsId`);
-  for (const [key, value] of selectedIngredientsId.entries()) {
-    console.log(key, value, typeof value);
-  }
-
   const selectedIngredientsArray = Array.from(selectedIngredientsId.values());
-
-  console.log(`type for selectedInselectedIngredientsArraygredientsId`);
-  selectedIngredientsArray.forEach((value, index) => {
-    console.log(index, value, typeof value);
-  });
 
   axios
     .post(`${awsIP}letscook/api/ingredients/`, selectedIngredientsArray)
@@ -329,9 +327,12 @@ const addIngredientsToList = (extendedIngredients, selectedIngredients) => {
     });
 };
 
+//load front page on start//
 document.addEventListener("DOMContentLoaded", () => {
   displayHome();
 });
+
+//nav button listeners//
 homeBtn.addEventListener("click", () => {
   hideRecipeCards();
   hideshoppingList();
@@ -347,5 +348,5 @@ searchRecipeNav.addEventListener("click", () => {
   hideWelcome();
   showRecipeCards();
 });
-
+//search button listener/
 searchBtn.addEventListener("click", searchHandler);
