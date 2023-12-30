@@ -152,9 +152,8 @@ module.exports = {
     sequelize
       .query(
         `SELECT DISTINCT 
-        TRIM(item_name) AS item_name_trimmed
-      FROM user_shopping_list
-      ORDER BY item_name_trimmed ASC;`
+        item_name
+      FROM user_shopping_list;`
     )
       .then((dbResult) => {
         res.status(200).send(dbResult[0]);

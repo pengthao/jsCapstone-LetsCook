@@ -74,6 +74,7 @@ const renderList = async () => {
   try {
     const response = await axios.get(`${awsIP}letscook/api/list/`);
     const ingredients = response.data;
+    console.log(ingredients)
     const fragment = document.createDocumentFragment();
 
     ingredients.forEach((ingredient) => {
@@ -85,7 +86,7 @@ const renderList = async () => {
           checkbox.classList.add("form-check-input");
           checkbox.classList.add(".bg-info");
           checkbox.classList.add("m-2");
-          checkbox.id = `${ingredient.item_id}_${checkboxIdCounter++}`;
+          checkbox.id = `${ingredient.item_name}_${checkboxIdCounter++}`;
           checkbox.name = ingredient.item_name;
           checkbox.value = ingredient.item_name;
           checkbox.checked = false;
