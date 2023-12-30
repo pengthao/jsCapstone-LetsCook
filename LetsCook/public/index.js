@@ -29,9 +29,9 @@ const hideshoppingList = () => {
 };
 
 const hideWelcome = () => {
-  const welcomeImgs  = document.querySelectorAll(".welcomeImgs ");
-  if (welcomeImgs ) {
-    welcomeImgs .forEach((img) => {
+  const welcomeImg  = document.querySelectorAll(".welcomeImg ");
+  if (welcomeImg ) {
+    welcomeImg .forEach((img) => {
       img.style.display = "none";
     });
   }
