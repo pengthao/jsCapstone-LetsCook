@@ -149,16 +149,19 @@ module.exports = {
       });
   },
   getList: (req, res) => {
-      sequelize.query(`SELECT 
+    sequelize
+      .query(
+        `SELECT 
         item_id,
         item_name,
         quantity,
         unit
         FROM user_shopping_list
-        Order by item_name asc;`)
-    .then((dbResult) => {
+        Order by item_name asc;`
+      )
+      .then((dbResult) => {
         res.status(200).send(dbResult[0]);
-    })
-    .catch((err) => console.log(err));
+      })
+      .catch((err) => console.log(err));
   },
 };

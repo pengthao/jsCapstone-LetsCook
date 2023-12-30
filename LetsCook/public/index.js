@@ -24,23 +24,23 @@ const errCallback = (err, origin) => {
 
 const hideshoppingList = () => {
   if (shoppingList) {
-    shoppingList.innerHTML=''
-  };
+    shoppingList.innerHTML = "";
+  }
 };
 
 const hideWelcome = () => {
   const welcomeImgs = document.querySelectorAll(".welcomeImg");
   if (welcomeImgs) {
-  welcomeImgs.forEach(img => {
-    img.style.display = "none";
+    welcomeImgs.forEach((img) => {
+      img.style.display = "none";
     });
-  };
+  }
 };
 
 const hideRecipeCards = () => {
   const recipeCards = document.querySelectorAll(".recipe-card");
   if (recipeCards) {
-    recipeCards.forEach(card => {
+    recipeCards.forEach((card) => {
       card.style.display = "none";
     });
   }
@@ -49,33 +49,31 @@ const hideRecipeCards = () => {
 const showRecipeCards = () => {
   const recipeCards = document.querySelectorAll(".recipe-card");
   if (recipeCards.length > 0) {
-    recipeCards.forEach(card => {
+    recipeCards.forEach((card) => {
       card.style.display = "block";
     });
   }
 };
 
-
-
 // Display Home //
 
-
 const displayHome = async () => {
-  if(welcomeHome) {
+  if (welcomeHome) {
     welcomeHome.style.display = "block";
-  } renderWelcome()
-}
+  }
+  renderWelcome();
+};
 
 const renderWelcome = () => {
-  welcomeHome.innerHTML = `<img src="../assets/letscookhome.jpg" class="welcomeImg"/>`
-} 
+  welcomeHome.innerHTML = `<img src="../assets/letscookhome.jpg" class="welcomeImg"/>`;
+};
 
 const renderList = async () => {
   try {
     const response = await axios.get(`${awsIP}letscook/api/list/`);
-    const ingredients = response.data; 
+    const ingredients = response.data;
     const fragment = document.createDocumentFragment();
-    
+
     ingredients.forEach((ingredient) => {
       const listItem = document.createElement("li");
       const label = document.createElement("label");
@@ -89,14 +87,12 @@ const renderList = async () => {
       fragment.appendChild(listItem);
     });
 
-    
     shoppingList.innerHTML = `<h4>Shopping List</h4>`;
     shoppingList.appendChild(fragment);
   } catch (error) {
     console.error("Error fetching list:", error);
   }
 };
-
 
 //Search External API//
 
@@ -116,8 +112,8 @@ const searchHandler = async (e) => {
 };
 
 const renderRecipeCards = (recipes) => {
-  hideWelcome()
-  hideshoppingList()
+  hideWelcome();
+  hideshoppingList();
 
   const fragment = document.createDocumentFragment();
   const rowDiv = document.createElement("div");
@@ -257,8 +253,8 @@ const renderIngredients = (extendedIngredients) => {
   addBtn.id = "subBtn";
   ingredientsList.appendChild(addBtn);
   addBtn.addEventListener("click", () => {
-      handleButtonClick(extendedIngredients);
-    });
+    handleButtonClick(extendedIngredients);
+  });
 };
 
 const handleButtonClick = (extendedIngredients) => {
@@ -266,36 +262,38 @@ const handleButtonClick = (extendedIngredients) => {
     document.querySelectorAll('input[type="checkbox"]:checked')
   );
 
-  console.log(`type for extendedIngred`)
+  console.log(`type for extendedIngred`);
   for (const [key, value] of checkedInputs.entries()) {
     console.log(key, value, typeof value);
   }
 
-  const selectedIngredients = checkedInputs.map((input) => {
-    const parts = input.id.split('_');
-    if (parts.length >= 2) {
-      return parseInt(parts[0]);
-    }
-    return null; 
-  }).filter((id) => id !== null);
+  const selectedIngredients = checkedInputs
+    .map((input) => {
+      const parts = input.id.split("_");
+      if (parts.length >= 2) {
+        return parseInt(parts[0]);
+      }
+      return null;
+    })
+    .filter((id) => id !== null);
 
-  console.log(selectedIngredients)
+  console.log(selectedIngredients);
 
   addIngredientsToList(extendedIngredients, selectedIngredients);
-
 };
 
 //Add ingredients to shopping list//
 
 const addIngredientsToList = (extendedIngredients, selectedIngredients) => {
+  const selectedIngredientsNumbers = selectedIngredients.map((str) =>
+    parseInt(str, 10)
+  );
 
-  const selectedIngredientsNumbers = selectedIngredients.map((str) => parseInt(str, 10));
-
-  console.log(`type for extendedIngred`)
+  console.log(`type for extendedIngred`);
   for (const [key, value] of extendedIngredients.entries()) {
     console.log(key, value, typeof value);
   }
-  console.log(`type for selectedIngred Id`)
+  console.log(`type for selectedIngred Id`);
   for (const [key, value] of selectedIngredients.entries()) {
     console.log(key, value, typeof value);
   }
@@ -303,7 +301,7 @@ const addIngredientsToList = (extendedIngredients, selectedIngredients) => {
   extendedIngredients.forEach((ingredient) => {
     idMap.set(ingredient.id, ingredient);
   });
-  console.log(`type for idmap Id`)
+  console.log(`type for idmap Id`);
   for (const [key, value] of idMap.entries()) {
     console.log(key, value, typeof value);
   }
@@ -312,14 +310,14 @@ const addIngredientsToList = (extendedIngredients, selectedIngredients) => {
     .map((id) => idMap.get(id))
     .filter(Boolean);
 
-    console.log(`type for selectedIngredientsId`)
-    for (const [key, value] of selectedIngredientsId.entries()) {
-      console.log(key, value, typeof value);
-    }
-    
+  console.log(`type for selectedIngredientsId`);
+  for (const [key, value] of selectedIngredientsId.entries()) {
+    console.log(key, value, typeof value);
+  }
+
   const selectedIngredientsArray = Array.from(selectedIngredientsId.values());
 
-  console.log(`type for selectedInselectedIngredientsArraygredientsId`)
+  console.log(`type for selectedInselectedIngredientsArraygredientsId`);
   selectedIngredientsArray.forEach((value, index) => {
     console.log(index, value, typeof value);
   });
@@ -332,22 +330,22 @@ const addIngredientsToList = (extendedIngredients, selectedIngredients) => {
 };
 
 document.addEventListener("DOMContentLoaded", () => {
-  displayHome()
+  displayHome();
 });
-homeBtn.addEventListener("click",  () => {
-  hideRecipeCards()
-  hideshoppingList()
-  displayHome()
+homeBtn.addEventListener("click", () => {
+  hideRecipeCards();
+  hideshoppingList();
+  displayHome();
 });
-shoppingListBtn.addEventListener("click",  () => {
-  hideWelcome()
-  hideRecipeCards()
-  renderList()
+shoppingListBtn.addEventListener("click", () => {
+  hideWelcome();
+  hideRecipeCards();
+  renderList();
 });
-searchRecipeNav.addEventListener("click",  () => {
-  hideshoppingList()
-  hideWelcome()
-  showRecipeCards()
+searchRecipeNav.addEventListener("click", () => {
+  hideshoppingList();
+  hideWelcome();
+  showRecipeCards();
 });
 
 searchBtn.addEventListener("click", searchHandler);

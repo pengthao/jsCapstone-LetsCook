@@ -12,46 +12,67 @@
     />
 
     <title>Lets Cook!</title>
-    
   </head>
 
   <body>
-
     <nav class="navbar navbar-expand-lg cus_nav_bar">
       <div class="container-fluid">
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item">
               <a href="#" class="nav-link align-middle px-0 px-lg-2">
-                <span id="homeBtn" class="ms-1 d-none d-sm-inline"
-                  >Home</span
-                >
+                <span id="homeBtn" class="ms-1 d-none d-sm-inline">Home</span>
               </a>
             </li>
             <li class="nav-item">
-              <a href="#submenu1" data-bs-toggle="collapse" class="nav-link nav-link px-0 px-lg-2" aria-expanded="true">
-                <span id="shoppingList-btn" class="ms-1 d-none d-sm-inline">Shopping List</span></a>
+              <a
+                href="#submenu1"
+                data-bs-toggle="collapse"
+                class="nav-link nav-link px-0 px-lg-2"
+                aria-expanded="true"
+              >
+                <span id="shoppingList-btn" class="ms-1 d-none d-sm-inline"
+                  >Shopping List</span
+                ></a
+              >
             </li>
             <li class="nav-item">
               <a href="#" class="nav-link px-0 px-lg-2">
-                <span id="searchRecipeNav" class="ms-1 d-none d-sm-inline">Recipes</span></a>
+                <span id="searchRecipeNav" class="ms-1 d-none d-sm-inline"
+                  >Recipes</span
+                ></a
+              >
             </li>
           </ul>
           <form class="d-flex m-3" role="search">
-            <input class="form-control ms-2 me-2 b-flex" id="searchField" type="search" placeholder="Search a Recipe!" aria-label="Search">
-            <button class="btn btn-outline-light" id="searchBtn" type="submit">Search</button>
+            <input
+              class="form-control ms-2 me-2 b-flex"
+              id="searchField"
+              type="search"
+              placeholder="Search a Recipe!"
+              aria-label="Search"
+            />
+            <button class="btn btn-outline-light" id="searchBtn" type="submit">
+              Search
+            </button>
           </form>
         </div>
       </div>
     </nav>
 
-
     <div class="container-fluid">
       <div class="row flex-nowrap">
-
         <div class="col py-3 bg">
           <div id="welcomeHome"></div>
           <div id="shoppingList"></div>

@@ -1,91 +1,90 @@
 /* Import Jost font from Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Jost:wght@400;500;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Jost:wght@400;500;700&display=swap");
 
 body {
-    font-family: 'Jost', Helvetica, sans-serif !important;
+  font-family: "Jost", Helvetica, sans-serif !important;
 }
 
 .welcomeImg {
-    display: block;
-    margin:0 auto;
-    width: 80%;
-    height: auto;
+  display: block;
+  margin: 0 auto;
+  width: 80%;
+  height: auto;
 }
 
 .py-3 {
-    padding: 2rem 3rem !important;
-} 
+  padding: 2rem 3rem !important;
+}
 
 .cus_nav_bar {
-    background-color: rgb(64, 179, 162);
+  background-color: rgb(64, 179, 162);
 }
 
 ul {
-    list-style: none;
+  list-style: none;
 }
 
 .nav-item:hover {
-    text-decoration: underline;
-    transform: scale(1.05); /* Enlarge the image on hover */
+  text-decoration: underline;
+  transform: scale(1.05); /* Enlarge the image on hover */
 }
 
 .searchBox {
-    background-color: white;
-    color: rgb(226, 125, 95);
-    outline: black;
-    width: 350px;
-    height: 2.5em;
-    padding-bottom: 5px;
+  background-color: white;
+  color: rgb(226, 125, 95);
+  outline: black;
+  width: 350px;
+  height: 2.5em;
+  padding-bottom: 5px;
 }
 
 #searchBtn {
-    height: 2.5em;
+  height: 2.5em;
 }
 
 .b-flex {
-    padding-left: 1em;
-    padding-bottom: 1em;
-    display: table-cell;
-    vertical-align: middle;
+  padding-left: 1em;
+  padding-bottom: 1em;
+  display: table-cell;
+  vertical-align: middle;
 }
 
-.outline{
-    background-color:rgb(244, 203, 176);
-    border-radius: 25px;
-    height: 100%;
-
+.outline {
+  background-color: rgb(244, 203, 176);
+  border-radius: 25px;
+  height: 100%;
 }
 
 .recipeImg {
-    border-radius: 25px;
-    padding-top: 1em;
-    width: 100%;
-    padding: 15px;
+  border-radius: 25px;
+  padding-top: 1em;
+  width: 100%;
+  padding: 15px;
 }
 
 .recipe-card {
-    padding-top: .75em;
-    padding-bottom: .25em;
+  padding-top: 0.75em;
+  padding-bottom: 0.25em;
 }
 
 .recipe-card:hover .recipeImg {
-    transform: scale(1.05);
+  transform: scale(1.05);
 }
 
 .imageContainer {
-    text-align: center;
+  text-align: center;
 }
 
 #recipeDetailsContent img {
-    float: inline-end;
-    padding: 10px;
+  float: inline-end;
+  padding: 10px;
 }
 
 #ingredientsList input[type="checkbox"] {
-    background-color: rgb(195, 141, 157);
-    border: 2px solid #333;
+  background-color: rgb(195, 141, 157);
+  border: 2px solid #333;
 }
 
 #ingredientsContainer {
-    margin: 10px;
+  margin: 10px;
 }

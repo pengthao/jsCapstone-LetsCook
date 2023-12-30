@@ -3,10 +3,9 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const { SERVER_PORT, rollBarAccessToken } = process.env;
-const path = require('path');
+const path = require("path");
 let options = require("../server/controller");
 const awsIP = "http://18.188.43.74:8080";
-
 
 app.use(express.json());
 app.use(cors());
@@ -36,6 +35,5 @@ app.get(`/letscook/api/search/`, getRecipes);
 app.get(`/letscook/api/recipe/`, getRecipeDetails);
 app.get(`/letscook/api/list/`, getList);
 app.post(`/letscook/api/ingredients/`, addToShoppingList);
-
 
 app.listen(SERVER_PORT, () => console.log(`Order up on ${SERVER_PORT}`));
