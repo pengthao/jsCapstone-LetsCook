@@ -8,6 +8,7 @@ const shoppingListBtn = document.getElementById("shoppingList-btn");
 const recipeCards = document.querySelector(".recipe-card");
 const recipeCardContainer = document.querySelector(".recipe-cards-container");
 const homeDiv = document.querySelector(".col py-3");
+let checkboxIdCounter = 0;
 
 const baseURL = "http://localhost:8080";
 const awsIP = "http://18.188.43.74:8080/";
@@ -78,21 +79,63 @@ const renderList = async () => {
     ingredients.forEach((ingredient) => {
       const listItem = document.createElement("li");
       const label = document.createElement("label");
+      const checkbox = document.createElement("input");
+      //apply properties to checkboxes for extraction later//
+          checkbox.type = "checkbox";
+          checkbox.classList.add("form-check-input");
+          checkbox.classList.add(".bg-info");
+          checkbox.classList.add("m-2");
+          checkbox.id = `${ingredient.item_name}_${checkboxIdCounter++}`;
+          checkbox.name = ingredient.item_name;
+          checkbox.value = ingredient.item_name;
+          checkbox.checked = false;
 
       label.classList.add("form-check-label");
       label.innerHTML = `
-        <b>${ingredient.item_name}</b> ${ingredient.quantity} - ${ingredient.unit}
+        <b>${ingredient.item_name}</b>
       `;
 
+      listItem.appendChild(checkbox);
       listItem.appendChild(label);
       fragment.appendChild(listItem);
     });
 
-    shoppingList.innerHTML = `<h4>Shopping List</h4>`;
+    shoppingList.innerHTML = `<h4 class="listHeader">Shopping List</h4>`;
     shoppingList.appendChild(fragment);
+    const removeBtn = document.createElement("button");
+    removeBtn.type = "button";
+    removeBtn.classList.add("btn", "btn-secondary", "deleteBtn");
+    removeBtn.innerText = "Remove Items";
+    removeBtn.id = "deleteBtn";
+    const listHeader = document.querySelector(".listHeader");
+    listHeader.appendChild(removeBtn);
+    removeBtn.addEventListener("click", () => {
+      removeIngredients();
+    });
+
+
+
   } catch (error) {
     console.error("Error fetching list:", error);
   }
+};
+
+const removeIngredients = () => {
+  const checkedInputs = Array.from(
+    document.querySelectorAll('#shoppingList input[type="checkbox"]:checked')
+  );
+
+  const selectedIngredients = checkedInputs.map((input) => input.value);
+console.log(selectedIngredients)
+const testArray = ['basil','onion']
+console.log(testArray)
+  axios
+    .delete(`${awsIP}letscook/api/removeIngredients/`, selectedIngredients)
+    .then(() => {
+      instructionsList.innerHTML = '';
+      alert(`Ingredients have been removed from your shopping list!`);
+      renderList();
+    });
 };
 
 //Search External API to make recipe cards //
@@ -242,7 +285,7 @@ const renderInstructions = (analyzedInstructions) => {
   instructionsList.appendChild(fragment);
 };
 
-let checkboxIdCounter = 0;
+
 
 const renderIngredients = (extendedIngredients) => {
 //setup//
@@ -290,7 +333,7 @@ const renderIngredients = (extendedIngredients) => {
 
 const handleButtonClick = (extendedIngredients) => {
   const checkedInputs = Array.from(
-    document.querySelectorAll('input[type="checkbox"]:checked')
+    document.querySelectorAll('#ingredientsContainer input[type="checkbox"]:checked')
   );
 
   const selectedIngredients = checkedInputs

@@ -151,17 +151,34 @@ module.exports = {
   getList: (req, res) => {
     sequelize
       .query(
-        `SELECT 
-        item_id,
-        item_name,
-        quantity,
-        unit
-        FROM user_shopping_list
-        Order by item_name asc;`
-      )
+        `SELECT DISTINCT 
+        TRIM(item_name) AS item_name_trimmed
+      FROM user_shopping_list
+      ORDER BY item_name_trimmed ASC;`
+    )
       .then((dbResult) => {
         res.status(200).send(dbResult[0]);
       })
       .catch((err) => console.log(err));
   },
+  removeFromShoppingList: (req, res) => {
+    const { ingredients } = req.body;
+  
+    sequelize.transaction(async (t) => {
+      for (const item_name of ingredients) {
+        await UserShoppingList.destroy({
+          where: {
+            item_name: item_name
+          },
+          transaction: t 
+        });
+      }
+  
+      res.sendStatus(200);
+    })
+    .catch((error) => {
+      console.error('Error removing ingredients:', error);
+      res.status(500).send('Error removing ingredients');
+    });
+  }
 };

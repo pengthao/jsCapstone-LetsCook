@@ -23,6 +23,9 @@ body {
 ul {
   list-style: none;
 }
+li {
+    list-style: none;
+  }
 
 .nav-item:hover {
   text-decoration: underline;
@@ -41,7 +44,9 @@ ul {
 #searchBtn {
   height: 2.5em;
 }
-
+#deleteBtn {
+    margin-left: 1em;
+}
 .b-flex {
   padding-left: 1em;
   padding-bottom: 1em;
