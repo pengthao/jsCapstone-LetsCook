@@ -153,7 +153,8 @@ module.exports = {
       .query(
         `SELECT DISTINCT 
         item_name
-      FROM user_shopping_list;`
+      FROM user_shopping_list
+      ORDER BY item_name asc;`
     )
       .then((dbResult) => {
         res.status(200).send(dbResult[0]);
@@ -161,10 +162,11 @@ module.exports = {
       .catch((err) => console.log(err));
   },
   removeFromShoppingList: (req, res) => {
-    const { ingredients } = req.body;
-  
+    const { item_name } = req.body;
+  console.log(req.body)
+  console.log(req.body.item_name)
     sequelize.transaction(async (t) => {
-      for (const item_name of ingredients) {
+      for (const item_name of item_name) {
         await UserShoppingList.destroy({
           where: {
             item_name: item_name

@@ -122,17 +122,20 @@ const removeIngredients = () => {
   const checkedInputs = Array.from(
     document.querySelectorAll('#shoppingList input[type="checkbox"]:checked')
   );
-
+console.log(checkedInputs)
   const selectedIngredients = checkedInputs.map((input) => input.value);
 console.log(selectedIngredients)
 const testArray = ['basil','onion']
 console.log(testArray)
   axios
-    .delete(`${awsIP}letscook/api/removeIngredients/`, selectedIngredients)
+    .delete(`${awsIP}letscook/api/removeIngredients/`, {
+      data: { item_name: selectedIngredients }
+    })
     .then(() => {
-      instructionsList.innerHTML = '';
+      console.log(`removed items`)
+ /*      instructionsList.innerHTML = '';
       alert(`Ingredients have been removed from your shopping list!`);
-      renderList();
+      renderList(); */
     });
 };
 
