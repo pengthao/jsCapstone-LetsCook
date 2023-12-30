@@ -85,7 +85,7 @@ const renderList = async () => {
           checkbox.classList.add("form-check-input");
           checkbox.classList.add(".bg-info");
           checkbox.classList.add("m-2");
-          checkbox.id = `${ingredient.item_name}_${checkboxIdCounter++}`;
+          checkbox.id = `${ingredient.item_id}_${checkboxIdCounter++}`;
           checkbox.name = ingredient.item_name;
           checkbox.value = ingredient.item_name;
           checkbox.checked = false;
@@ -112,9 +112,6 @@ const renderList = async () => {
     removeBtn.addEventListener("click", () => {
       removeIngredients();
     });
-
-
-
   } catch (error) {
     console.error("Error fetching list:", error);
   }
