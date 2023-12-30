@@ -29,9 +29,9 @@ const hideshoppingList = () => {
 };
 
 const hideWelcome = () => {
-  const welcomeImgs = document.querySelectorAll(".welcomeImg");
-  if (welcomeImgs) {
-    welcomeImgs.forEach((img) => {
+  const welcomeHome = document.querySelectorAll(".welcomeHome");
+  if (welcomeHome) {
+    welcomeHome.forEach((img) => {
       img.style.display = "none";
     });
   }
@@ -58,8 +58,8 @@ const showRecipeCards = () => {
 // Display Home //
 
 const displayHome = async () => {
-  if (welcomeImgs) {
-    welcomeImgs.style.display = "block";
+  if (welcomeHome) {
+    welcomeHome.style.display = "block";
   }
 };
 
