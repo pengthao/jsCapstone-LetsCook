@@ -1,14 +1,17 @@
-const homeClick = document.getElementById("homeClick");
-const homeList = document.getElementById("homeList");
-const shoppingList = document.getElementById("shoppingList");
-const recipeDiv = document.querySelector(".recipe-cards");
+const homeBtn = document.getElementById("homeBtn");
+const searchRecipeNav = document.getElementById("searchRecipeNav");
+const searchBtn = document.getElementById("searchBtn");
 
-const searchRecipeClick = document.getElementById("recipeSearchClick");
-const searchDiv = document.querySelector(".searchDiv");
+const shoppingList = document.getElementById("shoppingList");
+const welcomeHome = document.getElementById("welcomeHome");
+const shoppingListBtn = document.getElementById("shoppingList-btn");
+const recipeCards = document.querySelector(".recipe-card");
+const recipeCardContainer = document.querySelector(".recipe-cards-container");
 const homeDiv = document.querySelector(".col py-3");
+
 const baseURL = "http://localhost:8080";
-const awsIP = "http://18.188.43.74:8080";
-//add / to index.js and styles.css files
+const awsIP = "http://18.188.43.74:8080/";
+
 const errCallback = (err, origin) => {
   if (err.response) {
     console.log(err.response.data);
@@ -17,48 +20,59 @@ const errCallback = (err, origin) => {
   }
 };
 
-const clearHomeList = () => homeList.innerHTML="";
-const clearRecipeCard = () => recipeDiv.innerHTML="";
-const clearSearchDiv = () => searchDiv.innerHTML="";
+//Nav Functions Hide//
 
-// Display SearchBar
+const hideshoppingList = () => {
+  if (shoppingList) {
+    shoppingList.innerHTML=''
+  };
+};
 
-const displaySearch = () => {
-  clearHomeList()
+const hideWelcome = () => {
+  const welcomeImgs = document.querySelectorAll(".welcomeImg");
+  if (welcomeImgs) {
+  welcomeImgs.forEach(img => {
+    img.style.display = "none";
+    });
+  };
+};
 
-  searchDiv.innerHTML = `
-  <form class="b-flex" role="search">
-  <input
-    class="form-inline ds-input search-form searchBox"
-    type="search"
-    placeholder="Search Recipe"
-    aria-label="Search"
-    id="searchField"
-  />
-  <button
-    class="btn btn-secondary"
-    type="submit"
-    id="searchBtn"
-  >
-    Search
-  </button>
-</form>
-  `
-  const searchBtn = document.getElementById("searchBtn");
-  searchBtn.addEventListener("click", searchHandler);
-}
+const hideRecipeCards = () => {
+  const recipeCards = document.querySelectorAll(".recipe-card");
+  if (recipeCards) {
+    recipeCards.forEach(card => {
+      card.style.display = "none";
+    });
+  }
+};
+
+const showRecipeCards = () => {
+  const recipeCards = document.querySelectorAll(".recipe-card");
+  if (recipeCards.length > 0) {
+    recipeCards.forEach(card => {
+      card.style.display = "block";
+    });
+  }
+};
+
+
+
 // Display Home //
 
 
 const displayHome = async () => {
-  await renderList()
+  if(welcomeHome) {
+    welcomeHome.style.display = "block";
+  } renderWelcome()
 }
 
+const renderWelcome = () => {
+  welcomeHome.innerHTML = `<img src="../assets/letscookhome.jpg" class="welcomeImg"/>`
+} 
 
 const renderList = async () => {
-
   try {
-    const response = await axios.get(`${awsIP}/letscook/api/list/`);
+    const response = await axios.get(`${awsIP}letscook/api/list/`);
     const ingredients = response.data; 
     const fragment = document.createDocumentFragment();
     
@@ -76,8 +90,8 @@ const renderList = async () => {
     });
 
     
-    homeList.innerHTML = `<h4>Shopping List</h4>`;
-    homeList.appendChild(fragment);
+    shoppingList.innerHTML = `<h4>Shopping List</h4>`;
+    shoppingList.appendChild(fragment);
   } catch (error) {
     console.error("Error fetching list:", error);
   }
@@ -91,16 +105,20 @@ const searchHandler = async (e) => {
   const searchField = document.getElementById("searchField");
   const params = searchField.value;
   try {
-    const response = await axios.get(`${awsIP}/letscook/api/search/`, {
+    const response = await axios.get(`${awsIP}letscook/api/search/`, {
       params: { query: params },
     });
-    renderRecipes(response.data.results);
+    renderRecipeCards(response.data.results);
+    searchField.value = "";
   } catch (error) {
     errCallback(error, "getRecipes");
   }
 };
 
-const renderRecipes = (recipes) => {
+const renderRecipeCards = (recipes) => {
+  hideWelcome()
+  hideshoppingList()
+
   const fragment = document.createDocumentFragment();
   const rowDiv = document.createElement("div");
   rowDiv.classList.add("row", "row-cols-5");
@@ -111,12 +129,11 @@ const renderRecipes = (recipes) => {
   });
 
   fragment.appendChild(rowDiv);
-  recipeDiv.innerHTML = "";
-  recipeDiv.appendChild(fragment);
+  recipeCardContainer.innerHTML = "";
+  recipeCardContainer.appendChild(fragment);
 };
 
 const makeRecipeCard = (recipe) => {
-  clearHomeList()
   const recipeCard = document.createElement("div");
   recipeCard.classList.add("recipe-card");
   recipeCard.setAttribute("data-id", recipe.id);
@@ -140,7 +157,7 @@ const makeRecipeCard = (recipe) => {
 
 const fetchRecipeDetails = async (recipeId) => {
   try {
-    const response = await axios.get(`${awsIP}/letscook/api/recipe/`, {
+    const response = await axios.get(`${awsIP}letscook/api/recipe/`, {
       params: { recipeId: recipeId },
     });
     displayRecipeDetails(response.data);
@@ -158,24 +175,24 @@ const displayRecipeDetails = (recipeDetails) => {
 const renderRecipeInfo = (recipeDetails) => {
   const modalContent = document.getElementById("recipeDetailsContent");
   modalContent.innerHTML = `
-  <div class=".bg-light">
+  <div class="imageContainer bg-light">
   <img src="${recipeDetails.image}" class="rounded" alt="${recipeDetails.title}" style="max-width: 100%; height: auto;"/>
 
   <h2>${recipeDetails.title}</h2>
 
     <p>Ready in ${recipeDetails.readyInMinutes} minutes</p>
-    <br>
+
     <p>Servings: ${recipeDetails.servings}</p>
-    <br>
+
     <p>Summary: ${recipeDetails.summary}</p>
-    <br>
-    <br>
+
+
     </div>
-    <div id="ingredientsContainer .bg-light">
+    <div id="ingredientsContainer bg-light">
       <h3>Ingredients</h3>
       <ul id="ingredientsList"></ul>
     </div>
-    <div id="instructionsContainer .bg-light">
+    <div id="instructionsContainer bg-light">
     <h2>Instructions</h2>
     <ul id="instructionsList"></ul>
     </div>
@@ -308,27 +325,29 @@ const addIngredientsToList = (extendedIngredients, selectedIngredients) => {
   });
 
   axios
-    .post(`${awsIP}/letscook/api/ingredients/`, selectedIngredientsArray)
+    .post(`${awsIP}letscook/api/ingredients/`, selectedIngredientsArray)
     .then(() => {
       alert(`Ingredients have been added to your shopping list!`);
     });
 };
 
-
-homeClick.addEventListener("click",  () => {
-  displayHome()
-  clearRecipeCard()
-  clearSearchDiv()
-});
-shoppingList.addEventListener("click",  () => {
-  displayHome()
-  clearRecipeCard()
-  clearSearchDiv()
-});
 document.addEventListener("DOMContentLoaded", () => {
   displayHome()
 });
-searchRecipeClick.addEventListener("click",  () => {
-  displaySearch()
-  clearRecipeCard()
+homeBtn.addEventListener("click",  () => {
+  hideRecipeCards()
+  hideshoppingList()
+  displayHome()
 });
+shoppingListBtn.addEventListener("click",  () => {
+  hideWelcome()
+  hideRecipeCards()
+  renderList()
+});
+searchRecipeNav.addEventListener("click",  () => {
+  hideshoppingList()
+  hideWelcome()
+  showRecipeCards()
+});
+
+searchBtn.addEventListener("click", searchHandler);

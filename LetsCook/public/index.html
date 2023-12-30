@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="styles.css" />
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -12,111 +12,49 @@
     />
 
     <title>Lets Cook!</title>
+    
   </head>
+
   <body>
+
     <nav class="navbar navbar-expand-lg cus_nav_bar">
       <div class="container-fluid">
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarSupportedContent"
-          aria-controls="navbarSupportedContent"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                fill="currentColor"
-                class="bi bi-justify cus_menu_button"
-                viewBox="0 0 16 16"
-              >
-                <path
-                  fill-rule="evenodd"
-                  d="M2 12.5a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5m0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5m0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5m0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5"
-                />
-              </svg>
+              <a href="#" class="nav-link align-middle px-0 px-lg-2">
+                <span id="homeBtn" class="ms-1 d-none d-sm-inline"
+                  >Home</span
+                >
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="#submenu1" data-bs-toggle="collapse" class="nav-link nav-link px-0 px-lg-2" aria-expanded="true">
+                <span id="shoppingList-btn" class="ms-1 d-none d-sm-inline">Shopping List</span></a>
+            </li>
+            <li class="nav-item">
+              <a href="#" class="nav-link px-0 px-lg-2">
+                <span id="searchRecipeNav" class="ms-1 d-none d-sm-inline">Recipes</span></a>
             </li>
           </ul>
+          <form class="d-flex m-3" role="search">
+            <input class="form-control ms-2 me-2 b-flex" id="searchField" type="search" placeholder="Search a Recipe!" aria-label="Search">
+            <button class="btn btn-outline-light" id="searchBtn" type="submit">Search</button>
+          </form>
         </div>
       </div>
     </nav>
+
+
     <div class="container-fluid">
       <div class="row flex-nowrap">
-        <div class="col-auto col-md-3 col-xl-1 px-sm-2 px-0 cus_left_nav">
-          <div
-            class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100"
-          >
-            <ul
-              class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start"
-              id="menu"
-            >
-              <li class="nav-item">
-                <a href="#" class="nav-link align-middle px-0">
-                  <i class="fs-4 bi-house"></i>
-                  <span id="homeClick" class="ms-1 d-none d-sm-inline"
-                    >Home</span
-                  >
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#submenu1"
-                  data-bs-toggle="collapse"
-                  class="nav-link px-0 align-middle"
-                >
-                  <i class="fs-4 bi-speedometer2"></i>
-                  <span id="shoppingList" class="ms-1 d-none d-sm-inline"
-                    >Shopping List</span
-                  ></a
-                >
-                <ul
-                  class="collapse show nav flex-column ms-1"
-                  id="submenu1"
-                  data-bs-parent="#menu"
-                >
-                  <li class="w-100">
-                    <a href="#" class="nav-link px-0">
-                      <span id="recipeSearchClick" class="d-none d-sm-inline"
-                        >Recipe Search</span
-                      ></a
-                    >
-                  </li>
-                </ul>
-              </li>
-              <li>
-                <ul
-                  class="collapse nav flex-column ms-1"
-                  id="submenu2"
-                  data-bs-parent="#menu"
-                >
-                  <li class="w-100">
-                    <a href="#" class="nav-link px-0">
-                      <span class="d-none d-sm-inline">Search Recipes</span></a
-                    >
-                  </li>
-                </ul>
-              </li>
-              <li>
-                <ul
-                  class="collapse nav flex-column ms-1"
-                  id="submenu3"
-                  data-bs-parent="#menu"
-                ></ul>
-              </li>
-            </ul>
-            <hr/>
-          </div>
-        </div>
+
         <div class="col py-3 bg">
-          <div id="homeList"></div>
+          <div id="welcomeHome"></div>
+          <div id="shoppingList"></div>
           <!-- Modal -->
           <div
             class="modal fade"
@@ -156,8 +94,7 @@
               <!-- Place recipe details here -->
             </div>
           </div>
-          <div class="searchDiv" id="searchDiv"></div>
-          <div class="recipe-cards" id="recipe-cards"></div>
+          <div class="recipe-cards-container" id="recipe-cards-container"></div>
         </div>
       </div>
     </div>
@@ -179,6 +116,6 @@
       integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
       crossorigin="anonymous"
     ></script>
-    <script src="/index.js"></script>
+    <script src="index.js"></script>
   </body>
 </html>
