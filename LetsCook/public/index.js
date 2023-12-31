@@ -74,7 +74,6 @@ const renderList = async () => {
   try {
     const response = await axios.get(`${awsIP}api/letscook/list/`);
     const ingredients = response.data;
-    console.log(ingredients)
     const fragment = document.createDocumentFragment();
 
     ingredients.forEach((ingredient) => {
@@ -115,8 +114,6 @@ const renderList = async () => {
 
 const deleteListItem = (name) => {
   const decodedName = decodeURIComponent(name);
-console.log(name)
-console.log(decodedName)
   axios.delete(`${awsIP}api/letscook/removeIngredient/${decodedName}`)
   .then(() => {
     alert(`Ingredient has been removed to your shopping list!`);
