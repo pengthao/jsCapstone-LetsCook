@@ -337,6 +337,10 @@ const handleButtonClick = (extendedIngredients) => {
     })
     .filter((id) => id !== null);
 
+    checkedInputs.forEach((input) => {
+      input.checked = false;
+    });
+
   addIngredientsToList(extendedIngredients, selectedIngredients);
 };
 
