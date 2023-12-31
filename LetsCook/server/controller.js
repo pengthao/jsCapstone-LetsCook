@@ -155,31 +155,66 @@ module.exports = {
         item_name
       FROM user_shopping_list
       ORDER BY item_name asc;`
-    )
+      )
       .then((dbResult) => {
         res.status(200).send(dbResult[0]);
       })
       .catch((err) => console.log(err));
   },
   removeFromShoppingList: (req, res) => {
-    const { item_name } = req.body;
-  console.log(req.body)
-  console.log(req.body.item_name)
-    sequelize.transaction(async (t) => {
-      for (const item_name of item_name) {
-        await UserShoppingList.destroy({
-          where: {
-            item_name: item_name
-          },
-          transaction: t 
+    sequelize
+    .transaction((t) => {
+      const selectedIngredients = req.body;
+
+      const promises = selectedIngredients.map((ingredient) => {
+        const { name } = ingredient;
+        return sequelize
+          .query(
+            `SELECT * FROM user_shopping_list WHERE item_name = '${name}'`,
+            {
+              transaction: t,
+            }
+          )
+          .then((ingredientExists) => {
+            const ingredientInfo = ingredientExists[0][0];
+            if (ingredientInfo) {
+              return sequelize.query(
+                `DELETE FROM user_shopping_list WHERE item_name = '${name}'`,
+                {
+                  transaction: t,
+                }
+              );
+            }
+            return Promise.resolve();
+          });
+      });
+
+      return Promise.all(promises)
+        .then(() => {
+          console.log("Items removed from list");
+          res.sendStatus(200);
+        })
+        .catch((err) => {
+          console.log(err, "remove shopping list");
+          res.sendStatus(500);
         });
-      }
-  
+    });
+  },
+  removeFromShoppingList2: (req, res) => {
+
+    console.log(`req params ${req.params}`)
+    const {name} = req.params
+    console.log(name)
+    
+    sequelize.query(`DELETE FROM user_shopping_list
+    WHERE item_name = '${name}';`)
+    .then(() => {
+      console.log("Item removed from list");
       res.sendStatus(200);
     })
-    .catch((error) => {
-      console.error('Error removing ingredients:', error);
-      res.status(500).send('Error removing ingredients');
+    .catch((err) => {
+      console.log(err, "remove shopping list");
+      res.sendStatus(500);
     });
   }
 };

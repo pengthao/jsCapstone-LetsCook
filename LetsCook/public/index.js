@@ -95,6 +95,9 @@ const renderList = async () => {
       label.innerHTML = `
         <b>${ingredient.item_name}</b>
       `;
+      checkbox.addEventListener("click", () => {
+        deleteListItem(checkbox.value);
+      });
 
       listItem.appendChild(checkbox);
       listItem.appendChild(label);
@@ -103,41 +106,28 @@ const renderList = async () => {
 
     shoppingList.innerHTML = `<h4 class="listHeader">Shopping List</h4>`;
     shoppingList.appendChild(fragment);
-    const removeBtn = document.createElement("button");
-    removeBtn.type = "button";
-    removeBtn.classList.add("btn", "btn-secondary", "deleteBtn");
-    removeBtn.innerText = "Remove Items";
-    removeBtn.id = "deleteBtn";
-    const listHeader = document.querySelector(".listHeader");
-    listHeader.appendChild(removeBtn);
-    removeBtn.addEventListener("click", () => {
-      removeIngredients();
-    });
+
   } catch (error) {
     console.error("Error fetching list:", error);
   }
 };
 
-const removeIngredients = () => {
-  const checkedInputs = Array.from(
-    document.querySelectorAll('#shoppingList input[type="checkbox"]:checked')
-  );
-console.log(checkedInputs)
-  const selectedIngredients = checkedInputs.map((input) => input.value);
-console.log(selectedIngredients)
-const testArray = ['basil','onion']
-console.log(testArray)
-  axios
-    .delete(`${awsIP}letscook/api/removeIngredients/`, {
-      data: { item_name: selectedIngredients }
-    })
-    .then(() => {
-      console.log(`removed items`)
- /*      instructionsList.innerHTML = '';
-      alert(`Ingredients have been removed from your shopping list!`);
-      renderList(); */
-    });
-};
+
+const deleteListItem = (name) => {
+  const decodedName = decodeURIComponent(name);
+console.log(name)
+console.log(decodedName)
+  axios.delete(`${awsIP}letscook/api/removeIngredient/${decodedName}`)
+  .then(() => {
+    alert(`Ingredient has been removed to your shopping list!`);
+    renderList()
+  })
+  .catch((error) => {
+    console.error('Error removing ingredients:', error);
+  });
+}
+
+
 
 //Search External API to make recipe cards //
 

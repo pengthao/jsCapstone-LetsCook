@@ -17,6 +17,7 @@ const {
   addToShoppingList,
   getList,
   removeFromShoppingList,
+  removeFromShoppingList2,
 } = require("./controller");
 
 var Rollbar = require("rollbar");
@@ -36,6 +37,6 @@ app.get(`/letscook/api/search/`, getRecipes);
 app.get(`/letscook/api/recipe/`, getRecipeDetails);
 app.get(`/letscook/api/list/`, getList);
 app.post(`/letscook/api/ingredients/`, addToShoppingList);
-app.delete(`/letscook/api/removeIngredients/`,removeFromShoppingList);
+app.delete(`letscook/api/removeIngredient/:name`,removeFromShoppingList2);
 
 app.listen(SERVER_PORT, () => console.log(`Order up on ${SERVER_PORT}`));
