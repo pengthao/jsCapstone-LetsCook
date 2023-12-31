@@ -72,7 +72,7 @@ const renderWelcome = () => {
 
 const renderList = async () => {
   try {
-    const response = await axios.get(`${awsIP}letscook/api/list/`);
+    const response = await axios.get(`${awsIP}api/letscook/list/`);
     const ingredients = response.data;
     console.log(ingredients)
     const fragment = document.createDocumentFragment();
@@ -117,7 +117,7 @@ const deleteListItem = (name) => {
   const decodedName = decodeURIComponent(name);
 console.log(name)
 console.log(decodedName)
-  axios.delete(`${awsIP}letscook/api/removeIngredient/${decodedName}`)
+  axios.delete(`${awsIP}api/letscook/removeIngredient/${decodedName}`)
   .then(() => {
     alert(`Ingredient has been removed to your shopping list!`);
     renderList()
@@ -138,7 +138,7 @@ const searchHandler = async (e) => {
   const searchField = document.getElementById("searchField");
   const params = searchField.value;
   try {
-    const response = await axios.get(`${awsIP}letscook/api/search/`, {
+    const response = await axios.get(`${awsIP}api/letscook/search/`, {
       params: { query: params },
     });
     renderRecipeCards(response.data.results);
@@ -202,7 +202,7 @@ const makeRecipeCard = (recipe) => {
 
 const fetchRecipeDetails = async (recipeId) => {
   try {
-    const response = await axios.get(`${awsIP}letscook/api/recipe/`, {
+    const response = await axios.get(`${awsIP}api/letscook/recipe/`, {
       params: { recipeId: recipeId },
     });
     displayRecipeDetails(response.data);
@@ -359,7 +359,7 @@ const addIngredientsToList = (extendedIngredients, selectedIngredients) => {
   const selectedIngredientsArray = Array.from(selectedIngredientsId.values());
 
   axios
-    .post(`${awsIP}letscook/api/ingredients/`, selectedIngredientsArray)
+    .post(`${awsIP}api/letscook/ingredients/`, selectedIngredientsArray)
     .then(() => {
       alert(`Ingredients have been added to your shopping list!`);
     });
