@@ -324,7 +324,7 @@ const renderIngredients = (extendedIngredients) => {
 
 const handleButtonClick = (extendedIngredients) => {
   const checkedInputs = Array.from(
-    document.querySelectorAll('#ingredientsContainer input[type="checkbox"]:checked')
+    document.querySelectorAll('input[type="checkbox"]:checked')
   );
 
   const selectedIngredients = checkedInputs
