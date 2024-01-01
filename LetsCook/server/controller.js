@@ -162,45 +162,6 @@ module.exports = {
       .catch((err) => console.log(err));
   },
   removeFromShoppingList: (req, res) => {
-    sequelize
-    .transaction((t) => {
-      const selectedIngredients = req.body;
-
-      const promises = selectedIngredients.map((ingredient) => {
-        const { name } = ingredient;
-        return sequelize
-          .query(
-            `SELECT * FROM user_shopping_list WHERE item_name = '${name}'`,
-            {
-              transaction: t,
-            }
-          )
-          .then((ingredientExists) => {
-            const ingredientInfo = ingredientExists[0][0];
-            if (ingredientInfo) {
-              return sequelize.query(
-                `DELETE FROM user_shopping_list WHERE item_name = '${name}'`,
-                {
-                  transaction: t,
-                }
-              );
-            }
-            return Promise.resolve();
-          });
-      });
-
-      return Promise.all(promises)
-        .then(() => {
-          console.log("Items removed from list");
-          res.sendStatus(200);
-        })
-        .catch((err) => {
-          console.log(err, "remove shopping list");
-          res.sendStatus(500);
-        });
-    });
-  },
-  removeFromShoppingList2: (req, res) => {
 
     console.log(`req params ${req.params}`)
     const {name} = req.params
